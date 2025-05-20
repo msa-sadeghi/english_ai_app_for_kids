@@ -40,7 +40,9 @@ export default function App() {
   const handleLetterPress = async (letter) => {
     setWord((prev) => prev + letter);
     setImageUri(null);
-    Speech.speak(letterPronunciations[letter]);
+    // Speech.speak(letterPronunciations[letter]);
+    //TODO
+    Speech.speak(letter);
     const { sound } = await Audio.Sound.createAsync(
       require('./assets/click.wav')
     );
@@ -66,7 +68,9 @@ export default function App() {
         headers: { Authorization: `Client-ID ${UNSPLASH_ACCESS_KEY}` },
       });
       if (response.data.results.length > 0) {
-        setImageUri(response.data.results[0].urls.small);
+        const image = response.data.results[0].urls.small;
+        // console.log('آدرس تصویر:', image); // این رو اضافه کن
+        setImageUri(image);
       } else {
         alert('No image found. Try another word.');
       }
@@ -102,11 +106,11 @@ export default function App() {
             };
 
             return (
-              <Animated.View key={letter} style={[styles.letterButton, animatedStyle]}>
                 <TouchableOpacity onPress={handlePress}>
+              <Animated.View key={letter} style={[styles.letterButton, animatedStyle]}>
                   <Text style={styles.letterText}>{letter}</Text>
-                </TouchableOpacity>
               </Animated.View>
+                </TouchableOpacity>
             );
           })}
         </View>
@@ -114,11 +118,16 @@ export default function App() {
         {loading && <ActivityIndicator size="large" color="#007aff" style={{ marginTop: 20 }} />}
 
         {imageUri && (
+         
+          
+          
           <Image
             source={{ uri: imageUri }}
             style={styles.image}
             resizeMode="contain"
           />
+         
+          
         )}
       </ScrollView>
 
@@ -169,18 +178,21 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'center',
   },
-  letterButton: {
-    backgroundColor: '#cfe9ff',
-    padding: 12,
-    margin: 6,
-    borderRadius: 12,
-    width: 52,
-    alignItems: 'center',
-  },
+ letterButton: {
+   backgroundColor: '#AEEEEE',
+  margin: 10,
+  borderRadius: 16,
+  width: (width - 80) / 6, // 4 حرف در هر ردیف با فاصله
+  height: 90,
+  justifyContent: 'center',
+  alignItems: 'center',
+  elevation: 3,
+  shadowColor: '#000',
+},
   letterText: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#000',
+     fontSize: 30,
+  fontWeight: 'bold',
+  color: '#000',
   },
   image: {
     width: 300,
